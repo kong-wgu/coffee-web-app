@@ -478,6 +478,8 @@ export function Info() {
                       ))}
         
                       <Separator className="bg-black"/>
+
+                      <div className="font-bold"> Others  </div>
         
                       {unpredictedCoffee.map((coffee, i) => (
                         <CoffeeSlider
