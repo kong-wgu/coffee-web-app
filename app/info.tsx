@@ -64,7 +64,7 @@ export function Info() {
   useEffect(() => {
     
     const getCoffee = async() => {
-      return await fetch('https://starfish-app-lta6t.ondigitalocean.app/machinelearning').then((dat) => {
+      return await fetch('https://c964.ngrok.dev/machinelearning').then((dat) => {
         dat.json().then((what) => {
           console.log(what)
           coffeeData.current = what;
@@ -186,9 +186,9 @@ export function Info() {
     setPageLoading(true)
     setLoading(false)
 
-    await fetch('https://starfish-app-lta6t.ondigitalocean.app/reset').then(async(dat) => {
+    await fetch('https://c964.ngrok.dev/reset').then(async(dat) => {
       console.log(dat)
-        await fetch('https://starfish-app-lta6t.ondigitalocean.app/machinelearning').then((dat) => {
+        await fetch('https://c964.ngrok.dev/machinelearning').then((dat) => {
           dat.json().then((what) => {
             coffeeData.current = what;
             let newData : coffee[] = [];
@@ -339,7 +339,7 @@ export function Info() {
       console.log(what)
 
       let start = async() => {
-        await fetch('https://starfish-app-lta6t.ondigitalocean.app/machinelearning').then((dat) => {
+        await fetch('https://c964.ngrok.dev/machinelearning').then((dat) => {
           dat.json().then((what) => {
             coffeeData.current = what;
             let newData : coffee[] = [];
