@@ -64,45 +64,48 @@ export function Info() {
   useEffect(() => {
     
     const getCoffee = async() => {
-      await fetch('https://starfish-app-lta6t.ondigitalocean.app/machinelearning').then((dat) => {
+      return await fetch('https://starfish-app-lta6t.ondigitalocean.app/machinelearning').then((dat) => {
         dat.json().then((what) => {
+          console.log(what)
           coffeeData.current = what;
+
+          let newData : coffee[] = [];
+          coffeeData.current.map((coffee : coffee) => {
+            newData.push(coffee)
+          })
+
+          console.log(newData)
+          
+          let init = coffeeData.current.filter((what) => what.hour_of_day == 8)
+
+          let newCoffeeHolder = CoffeeHours;
+
+          coffeeData.current.map((what) => {
+            let found = newCoffeeHolder.findIndex((num) => num.hour == what.hour_of_day)
+            if(found != -1){
+              let hold = newCoffeeHolder?.at(found)?.totalSales!;
+              hold = hold + what.sales;
+              newCoffeeHolder[found].totalSales = hold;
+            }
+          })
+
+          setHourlyData(newCoffeeHolder)
+
+          let unpredicted = dataAPI.filter((what) => init.findIndex((item) => item.coffee_name == what.coffee_name) == -1 )
+          console.log(unpredicted)
+          setUnpredictedCoffee(unpredicted)
+
+          setPredictionCoffee(init)
+          setSalesData(newData)
+
+          setLoading(true)
+          setPageLoading(false)
         })
       })
 
     }
     
-    getCoffee().then(() => {
-
-      let newData : coffee[] = [];
-      coffeeData.current.map((coffee : coffee) => {
-        newData.push(coffee)
-      })
-
-      let init = coffeeData.current.filter((what) => what.hour_of_day == 8)
-
-      let newCoffeeHolder = CoffeeHours;
-
-      coffeeData.current.map((what) => {
-        let found = newCoffeeHolder.findIndex((num) => num.hour == what.hour_of_day)
-        if(found != -1){
-          let hold = newCoffeeHolder?.at(found)?.totalSales!;
-          hold = hold + what.sales;
-          newCoffeeHolder[found].totalSales = hold;
-        }
-      })
-
-      setHourlyData(newCoffeeHolder)
-
-      let unpredicted = dataAPI.filter((what) => init.findIndex((item) => item.coffee_name == what.coffee_name) == -1 )
-      setUnpredictedCoffee(unpredicted)
-
-      setPredictionCoffee(init)
-      setSalesData(newData)
-
-      setLoading(true)
-      setPageLoading(false)
-    })
+    getCoffee()
   }, [])
 
   const [salesData, setSalesData] = useState<coffee[]>();
@@ -331,52 +334,58 @@ export function Info() {
     setPageLoading(true)
     setLoading(false)
     
-    await updateData(dataAPI).then(async(what) => {
+    await updateData(dataAPI).then((what) => {
 
-      await fetch('https://starfish-app-lta6t.ondigitalocean.app/machinelearning').then((dat) => {
-        dat.json().then((what) => {
-          coffeeData.current = what;
-          let newData : coffee[] = [];
-          coffeeData.current.map((coffee : coffee) => {
-            newData.push(coffee)
+      console.log(what)
+
+      let start = async() => {
+        await fetch('https://starfish-app-lta6t.ondigitalocean.app/machinelearning').then((dat) => {
+          dat.json().then((what) => {
+            coffeeData.current = what;
+            let newData : coffee[] = [];
+            coffeeData.current.map((coffee : coffee) => {
+              newData.push(coffee)
+            })
+      
+            let init = coffeeData.current.filter((what) => what.hour_of_day == currentHour)
+      
+            let newCoffeeHolder = [
+              {hour: 8, totalSales: 0},
+              {hour: 9, totalSales: 0},
+              {hour: 10, totalSales: 0},
+              {hour: 11, totalSales: 0},
+              {hour: 12, totalSales: 0},
+              {hour: 13, totalSales: 0},
+              {hour: 14, totalSales: 0},
+              {hour: 15, totalSales: 0},
+              {hour: 16, totalSales: 0},
+            ]
+
+            coffeeData.current.map((what) => {
+              let found = newCoffeeHolder.findIndex((num) => num.hour == what.hour_of_day)
+              if(found != -1){
+                let hold = newCoffeeHolder.at(found)!.totalSales;
+                hold = hold + what.sales;
+                newCoffeeHolder.at(found)!.totalSales = hold;
+              }
+            })          
+      
+            setHourlyData(newCoffeeHolder)
+      
+            let unpredicted = dataAPI.filter((what) => init.findIndex((item) => item.coffee_name == what.coffee_name) == -1 )
+            console.log(unpredicted)
+            setUnpredictedCoffee(unpredicted)
+      
+            setPredictionCoffee(init)
+            setSalesData(newData)
+      
+            setLoading(true)
+            setPageLoading(false)
           })
-    
-          let init = coffeeData.current.filter((what) => what.hour_of_day == currentHour)
-    
-          let newCoffeeHolder = [
-            {hour: 8, totalSales: 0},
-            {hour: 9, totalSales: 0},
-            {hour: 10, totalSales: 0},
-            {hour: 11, totalSales: 0},
-            {hour: 12, totalSales: 0},
-            {hour: 13, totalSales: 0},
-            {hour: 14, totalSales: 0},
-            {hour: 15, totalSales: 0},
-            {hour: 16, totalSales: 0},
-          ]
-
-          coffeeData.current.map((what) => {
-            let found = newCoffeeHolder.findIndex((num) => num.hour == what.hour_of_day)
-            if(found != -1){
-              let hold = newCoffeeHolder.at(found)!.totalSales;
-              hold = hold + what.sales;
-              newCoffeeHolder.at(found)!.totalSales = hold;
-            }
-          })          
-    
-          setHourlyData(newCoffeeHolder)
-    
-          let unpredicted = dataAPI.filter((what) => init.findIndex((item) => item.coffee_name == what.coffee_name) == -1 )
-          console.log(unpredicted)
-          setUnpredictedCoffee(unpredicted)
-    
-          setPredictionCoffee(init)
-          setSalesData(newData)
-    
-          setLoading(true)
-          setPageLoading(false)
         })
-      })
+      }
+
+      start()
       
     })
       
@@ -398,7 +407,7 @@ export function Info() {
         {pageLoading ? (
           <div className="flex place-content-center">
             <svg className="inline-block h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
           </div>
@@ -485,7 +494,7 @@ export function Info() {
 
                   ) : (
                     <svg className="inline-block h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                   )}

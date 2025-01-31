@@ -5,6 +5,11 @@ const nextConfig = {
     // Since we can't modify tsconfig, we'll make Next.js more lenient
     ignoreBuildErrors: true,
   },
+  // Disable experimental features that might cause conflicts
+  experimental: {
+    // Explicitly disable turbopack
+    turbo: false,
+  },
   // appDir is no longer needed in experimental as it's now stable
   // swcMinify is now enabled by default
   async headers() {
