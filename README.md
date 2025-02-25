@@ -1,4 +1,13 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+The the Front-End Web Application for the CapStone for WGU's requirements.
+
+This tech stack focuses on the UI and API integration for communicating with the server side. The following technology were used:
+  - HTML
+  - Javascript
+  - Typescript
+  - CSS
+  - Tailwind CSS
+  - React JS
+  - Next JS
 
 ## Getting Started
 
